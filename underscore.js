@@ -510,7 +510,20 @@
   // Get the first element of an array. Passing **n** will return the first N
   // values in the array. Aliased as `head` and `take`. The **guard** check
   // allows it to work with `_.map`.
+  /**
+   * first函数是获取数组的第一位, 当然支持获取多位, 第二个参数n就是获取从数组
+   * 第一位开始的个数。
+   *
+   * @param {*} array 源数组-要进行操作的数组
+   * @param {*} n 获取数组的个数
+   * @param {*} guard 这个参数我也不知道什么意思, 我先忽略。
+   * @returns
+   */
+
   _.first = _.head = _.take = function(array, n, guard) {
+    // 首先判断数组存在与否, 如果传递的不是数组或者其他类型, 则 return []
+    // 传递的是数组-没有传递第二个参数, 则返回数组第零个。
+    // 如果是数组而且传递了第二个参数, 则调用 initial
     if (array == null || array.length < 1) return n == null ? void 0 : [];
     if (n == null || guard) return array[0];
     return _.initial(array, array.length - n);
@@ -519,8 +532,18 @@
   // Returns everything but the last entry of the array. Especially useful on
   // the arguments object. Passing **n** will return all the values in
   // the array, excluding the last N.
+  /**
+   *
+   * initial 默认则是去除数组的最后一位, 根据传递的参数n决定去除的位数。
+   * (当然最后得到的值, 是从最后去除的位数以后得到的值 )
+   * @param {*} array
+   * @param {*} n
+   * @param {*} guard
+   * @returns
+   */
   _.initial = function(array, n, guard) {
-    console.log(array, n, guard)
+    // 这里判断传递的任何类型, 都使用call调用数组的方法。
+    // 这里的（n == null || guard）避免直接调用initial函数时n参数传递null的情况
     return slice.call(array, 0, Math.max(0, array.length - (n == null || guard ? 1 : n)));
   };
 
