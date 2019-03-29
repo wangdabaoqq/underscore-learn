@@ -117,6 +117,7 @@
           rest = Array(length),
           index = 0;
       for (; index < length; index++) {
+        // console.log()
         rest[index] = arguments[index + startIndex];
       }
       switch (startIndex) {
@@ -150,6 +151,7 @@
   };
 
   var has = function(obj, path) {
+    console.log(obj, path)
     return obj != null && hasOwnProperty.call(obj, path);
   }
 
@@ -542,13 +544,21 @@
    * @returns
    */
   _.initial = function(array, n, guard) {
-    // 这里判断传递的任何类型, 都使用call调用数组的方法。
+    // 这里传递的任何类型, 都使用call调用数组的方法。(不是Array类型调用slice方法会返回空数组)
     // 这里的（n == null || guard）避免直接调用initial函数时n参数传递null的情况
     return slice.call(array, 0, Math.max(0, array.length - (n == null || guard ? 1 : n)));
   };
 
   // Get the last element of an array. Passing **n** will return the last N
   // values in the array.
+  /**
+   * last函数与first函数功能是相反的
+   *
+   * @param {*} array
+   * @param {*} n
+   * @param {*} guard
+   * @returns
+   */
   _.last = function(array, n, guard) {
     if (array == null || array.length < 1) return n == null ? void 0 : [];
     if (n == null || guard) return array[array.length - 1];
@@ -558,6 +568,7 @@
   // Returns everything but the first entry of the array. Aliased as `tail` and `drop`.
   // Especially useful on the arguments object. Passing an **n** will return
   // the rest N values in the array.
+  // rest函数与initial相反
   _.rest = _.tail = _.drop = function(array, n, guard) {
     return slice.call(array, n == null || guard ? 1 : n);
   };
@@ -567,19 +578,44 @@
     return _.filter(array, Boolean);
   };
 
-  // Internal implementation of a recursive `flatten` function.
+  /**
+   * 数组扁平化 
+   *
+   * @param {*} input 源数组
+   * @param {*} shallow 扁平化全部与否 true 为只扁平化一层, 否则扁平化全部
+   * @param {*} strict 这个参数我想了下, _.flatten默认就是false, 也不允许传入阿,
+   * 根本就没有接收的。
+   * @param {*} output 这个参数不知道有什么用处, 查了下说会提升性能。。。
+   * @returns
+   */
   var flatten = function(input, shallow, strict, output) {
     output = output || [];
     var idx = output.length;
+    // 首先对input进行循环,  获取单个元素, 判断类型是否是数组-(累数组-Arguments)
+    // 符合条件, 进入第二个判断, 如果shallow为true则进行while循环
+    // idx默认是output.length也就是0, idx被赋值时做累加，output的最后一位 ===  idx
+    // 当不符合条件时, 进入判断条件(!strict)满足进入, 由于idx是累加的, 也就是idx永远是
+    // output的最后一位, 赋值。
+    // 当 shallow 为false时, 递归调用flatten, 进行idx赋值, idx为output数组最后一位
+    // 并且由于(!strict) 成立, 与上同理。赋值, 最后返回output。
+    // 我觉得output参数没有必要作为参数进来, 直接创建不也行嘛? 不太理解。
+    // var numbers = [10, 5, 100, 2, 1000, new Array(3)];
+    // console.log(_.flatten(numbers, true))
+    // [10, 5, 100, 2, 1000, undefined, undefined, undefined]
     for (var i = 0, length = getLength(input); i < length; i++) {
       var value = input[i];
+      // console.log(value, idx)
       if (isArrayLike(value) && (_.isArray(value) || _.isArguments(value))) {
         // Flatten current level of array or arguments object.
         if (shallow) {
           var j = 0, len = value.length;
+          // console.log(len)
           while (j < len) output[idx++] = value[j++];
+          // console.log(output)
         } else {
+          // console.log(value)
           flatten(value, shallow, strict, output);
+          // console.log(output)
           idx = output.length;
         }
       } else if (!strict) {
@@ -596,6 +632,7 @@
 
   // Return a version of the array that does not contain the specified value(s).
   _.without = restArguments(function(array, otherArrays) {
+    console.log(otherArrays)
     return _.difference(array, otherArrays);
   });
 
@@ -658,6 +695,7 @@
   // Take the difference between one array and a number of other arrays.
   // Only the elements present in just the first array will remain.
   _.difference = restArguments(function(array, rest) {
+    console.log(array, rest)
     rest = flatten(rest, true, true);
     return _.filter(array, function(value){
       return !_.contains(rest, value);
