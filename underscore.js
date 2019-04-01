@@ -1076,7 +1076,7 @@
   _.keys = function(obj) {
     // console.log(Object.keys(obj))
     if (!_.isObject(obj)) return [];
-    if (nativeKeys) return nativeKeys(obj);
+    // if (nativeKeys) return nativeKeys(obj);
     // console.log(111)
     var keys = [];
     for (var key in obj) if (has(obj, key)) keys.push(key);
@@ -1433,6 +1433,9 @@
   };
 
   // Is the given value `NaN`?
+  // Number.isNaN = Number.isNaN || function(value) {
+  // return typeof value === "number" && isNaN(value);
+  // }
   _.isNaN = function(obj) {
     return _.isNumber(obj) && isNaN(obj);
   };
