@@ -151,7 +151,6 @@
   };
 
   var has = function(obj, path) {
-    console.log(obj, path)
     return obj != null && hasOwnProperty.call(obj, path);
   }
 
@@ -1072,12 +1071,19 @@
   };
 
   // Retrieve the names of an object's own properties.
-  // Delegates to **ECMAScript 5**'s native `Object.keys`.
+  /**
+   * 获取给定对象keys
+   *
+   * @param {*} obj
+   * @returns
+   */
   _.keys = function(obj) {
-    // console.log(Object.keys(obj))
+    // 首先判断是否是(function object类型) 不符合条件返回[]
     if (!_.isObject(obj)) return [];
-    // if (nativeKeys) return nativeKeys(obj);
-    // console.log(111)
+    // 判断是否支持Object.keys，支持则使用。
+    if (nativeKeys) return nativeKeys(obj);
+    // 不支持则使用for循环, 判断是否存在
+    // hash === obj != null && Object.prototype.hasOwnProperty.call(ob, key)
     var keys = [];
     for (var key in obj) if (has(obj, key)) keys.push(key);
     // Ahem, IE < 9.

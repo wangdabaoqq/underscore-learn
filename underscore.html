@@ -39,5 +39,15 @@
 // export default personTypes
 // console.log(_.without([1, 2, 1, 0, 3, 1, 4], 0, 1))
 // console.log(_.isNaN(new Date().toString()))
-console.log(_.keys({one: 1, two: 2, three: 3}))
+// console.log(_.keys(['one', 'two', 'three']))
+// function Stooge(name) {
+//   this.name = name;
+// }
+// Stooge.prototype.silly = true;
+// console.log(_.allKeys(new Stooge("Moe")))
+// console.log(_.values({one: 1, two: 2, three: 3}))
+// console.log(_.values([1, 2, 3, 4]))
+console.log(_.mapObject([1, 2, 33], function(val, key) {
+  return val + 5;
+}))
 </script>
