@@ -1260,8 +1260,20 @@
     return obj;
   };
 
-  // Returns whether an object has a given set of `key:value` pairs.
+  /**
+   *
+   *
+   * @param {*} object
+   * @param {*} attrs
+   * @returns
+   */
   _.isMatch = function(object, attrs) {
+    // attrs参数如果传递的不是对象, 传递的基本类型比如`1`返回的也是true。郁闷
+    // 传递的是引用类型, 使用`_.keys`获取key, 获取keys长度。
+    // 判断是否object === undefine || null return !length
+    // var obj = Object(object) 这里我觉得是为了处理传递的`object`是基本类型
+    // 进行引用类型的封装。感觉没什么用, 我觉得判断下object是不是引用类型的, 不是
+    // 直接 `return false`. 
     var keys = _.keys(attrs), length = keys.length;
     if (object == null) return !length;
     var obj = Object(object);

@@ -47,7 +47,53 @@
 // console.log(_.allKeys(new Stooge("Moe")))
 // console.log(_.values({one: 1, two: 2, three: 3}))
 // console.log(_.values([1, 2, 3, 4]))
-console.log(_.mapObject([1, 2, 33], function(val, key) {
-  return val + 5;
-}))
+// console.log(_.mapObject([1, 2, 33], function(val, key) {
+//   return val + 5;
+// }))
+// var stooge = {name: 'moe', age: 32};
+// console.log(_.isMatch('a', {a: 'a'}));
+// var twoSum = function(nums, target) {
+//     var hash = {};
+//     var arr = []
+//     for(var i = 0; i < nums.length; i++) {
+//         var num = nums[i];
+//         // console.log(nums[i])
+//         let a = nums.indexOf(target - num)
+//         if (a >= 0 && a !== i) {
+//           // arr.push(i)
+//           arr = [i, a]
+//           break
+//           // console.log(arr)
+//           // return arr
+//         }
+//         // console.log(111)
+//         // console.log(arr)
+//         // return arr.length === 2 ? arr :[]
+//         // console.log(arr)
+//         // return arr
+//         // if(hash[num] !== undefined) {
+//         //   // console.log(hash[num], i, num, hash)
+//         //     return [hash[num], i]
+//         // } else {
+//         //     // console.log(i)
+//         //     hash[target - num] = i;
+//         //   // console.log(hash[num], i, num, hash)
+//         // }
+//     }
+//     return arr
+//     // return [];
+// };
+var twoSum = function(nums, target) {
+  var a = [];
+  for (var i = 0, len = nums.length; i < len; i++) {
+    var tmp = target - nums[i];
+    console.log(tmp)
+    console.log(a[tmp], a, tmp, i)
+    if (a[tmp] !== undefined) return [a[tmp], i];
+    a[nums[i]] = i;
+  }
+};
+
+let nums = [2,5, 5, 3,11], target = 10
+console.log(twoSum(nums, target))
 </script>
