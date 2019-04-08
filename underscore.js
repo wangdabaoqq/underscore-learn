@@ -1447,6 +1447,7 @@
 
   // Is a given object a finite number?
   _.isFinite = function(obj) {
+    // isFinite判是否为一个有限数值
     return !_.isSymbol(obj) && isFinite(obj) && !isNaN(parseFloat(obj));
   };
 

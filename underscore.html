@@ -38,36 +38,36 @@
     
 //     return result;
 // };
-var romanToInt = function(s) {
-  var hash = {};
-  hash["I"] = 1;
-  hash["X"] = 10;
-  hash["C"] = 100;
-  hash["M"] = 1000;
-  hash["V"] = 5;
-  hash["L"] = 50;
-  hash["D"] = 500;
+// var romanToInt = function(s) {
+//   var hash = {};
+//   hash["I"] = 1;
+//   hash["X"] = 10;
+//   hash["C"] = 100;
+//   hash["M"] = 1000;
+//   hash["V"] = 5;
+//   hash["L"] = 50;
+//   hash["D"] = 500;
 
-  var sum = 0;
+//   var sum = 0;
 
-  for (var i = 0, len = s.length; i < len; i++) {
-    var item = hash[s[i]];
-    console.log(i)
-    // console.log(item)
-    console.log(i + 1 === len, i+ 1, len)
-    var nextItem = i + 1 === len ? 0 : hash[s[i + 1]];
-    console.log(nextItem, item)
-    if (nextItem > item) {
-      sum += nextItem - item;
-      i++;
-      console.log(i)
-    } else 
-      sum += item;
-  } 
+//   for (var i = 0, len = s.length; i < len; i++) {
+//     var item = hash[s[i]];
+//     console.log(i)
+//     // console.log(item)
+//     console.log(i + 1 === len, i+ 1, len)
+//     var nextItem = i + 1 === len ? 0 : hash[s[i + 1]];
+//     console.log(nextItem, item)
+//     if (nextItem > item) {
+//       sum += nextItem - item;
+//       i++;
+//       console.log(i)
+//     } else 
+//       sum += item;
+//   } 
 
-  return sum;
-};
-console.log(romanToInt('XLC'))
+//   return sum;
+// };
+// console.log(romanToInt('XLC'))
   // var a = function aa () {
   //   var ss = function (ss, fn) {
   //     // var a = ss
@@ -197,4 +197,5 @@ console.log(romanToInt('XLC'))
 
 // let nums = [2,5, 5, 3,11], target = 10
 // console.log(twoSum(nums, target))
+console.log(_.isObject({}))
 </script>
