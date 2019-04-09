@@ -1405,6 +1405,8 @@
   };
 
   // Is a given value a DOM element?
+  // 判断元素类型是否是元素节点
+  // nodeType === 1 表示一个元素节点, 例如<p>和<div>
   _.isElement = function(obj) {
     return !!(obj && obj.nodeType === 1);
   };
