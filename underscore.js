@@ -676,17 +676,22 @@
 
   // Produce an array that contains every item shared between all the
   // passed-in arrays.
+  // 获取并集
   _.intersection = function(array) {
     var result = [];
     var argsLength = arguments.length;
     for (var i = 0, length = getLength(array); i < length; i++) {
       var item = array[i];
+      console.log(array)
       if (_.contains(result, item)) continue;
       var j;
       for (j = 1; j < argsLength; j++) {
         if (!_.contains(arguments[j], item)) break;
       }
-      if (j === argsLength) result.push(item);
+      console.log(j, argsLength, item)
+      if (j === argsLength)
+      // console.log(item, j, argsLength)
+      result.push(item);
     }
     return result;
   };
@@ -1399,13 +1404,14 @@
   // Is a given array, string, or object empty?
   // An "empty" object has no enumerable own-properties.
   _.isEmpty = function(obj) {
+    console.log(obj.length)
     if (obj == null) return true;
     if (isArrayLike(obj) && (_.isArray(obj) || _.isString(obj) || _.isArguments(obj))) return obj.length === 0;
     return _.keys(obj).length === 0;
   };
 
   // Is a given value a DOM element?
-  // 判断元素类型是否是元素节点
+  // 判断元素类型是否是元素节点&&元素存在
   // nodeType === 1 表示一个元素节点, 例如<p>和<div>
   _.isElement = function(obj) {
     return !!(obj && obj.nodeType === 1);
@@ -1418,6 +1424,7 @@
   };
 
   // Is a given variable an object?
+  // 判读对象(function, object)
   _.isObject = function(obj) {
     var type = typeof obj;
     return type === 'function' || type === 'object' && !!obj;
