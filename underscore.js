@@ -653,6 +653,7 @@
     for (var i = 0, length = getLength(array); i < length; i++) {
       var value = array[i],
           computed = iteratee ? iteratee(value, i, array) : value;
+          console.log(!_.contains(result, value))
       if (isSorted && !iteratee) {
         if (!i || seen !== computed) result.push(value);
         seen = computed;
@@ -662,6 +663,7 @@
           result.push(value);
         }
       } else if (!_.contains(result, value)) {
+        console.log(value)
         result.push(value);
       }
     }
@@ -671,18 +673,24 @@
   // Produce an array that contains the union: each distinct element from all of
   // the passed-in arrays.
   _.union = restArguments(function(arrays) {
+    console.log(arrays)
     return _.uniq(flatten(arrays, true, true));
   });
 
   // Produce an array that contains every item shared between all the
   // passed-in arrays.
   // 获取并集
+  // for循环进行contains判断result数组中存在与否循环的元素
+  // 如果存在则进行continue
+  // 第二个for循环判断其他参数数组中, 是否存在item元素, 不存在则break
+  // 遍历其他参数数组
+  // 最后判断如果j === argsLength, 则说明其他参数数组中存在item元素
+  // 将其放入result中。
   _.intersection = function(array) {
     var result = [];
     var argsLength = arguments.length;
     for (var i = 0, length = getLength(array); i < length; i++) {
       var item = array[i];
-      console.log(array)
       if (_.contains(result, item)) continue;
       var j;
       for (j = 1; j < argsLength; j++) {
