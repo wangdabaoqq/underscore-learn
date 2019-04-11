@@ -653,7 +653,6 @@
     for (var i = 0, length = getLength(array); i < length; i++) {
       var value = array[i],
           computed = iteratee ? iteratee(value, i, array) : value;
-          console.log(!_.contains(result, value))
       if (isSorted && !iteratee) {
         if (!i || seen !== computed) result.push(value);
         seen = computed;
@@ -663,7 +662,6 @@
           result.push(value);
         }
       } else if (!_.contains(result, value)) {
-        console.log(value)
         result.push(value);
       }
     }
