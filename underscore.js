@@ -704,6 +704,7 @@
 
   // Take the difference between one array and a number of other arrays.
   // Only the elements present in just the first array will remain.
+  // 获取差集(根据第一个数组, 判断第一个数组中不包含的与元素)
   _.difference = restArguments(function(array, rest) {
     console.log(array, rest)
     rest = flatten(rest, true, true);
