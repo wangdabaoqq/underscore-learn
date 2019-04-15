@@ -110,16 +110,19 @@
   // on. This helper accumulates all remaining arguments past the function’s
   // argument length (or an explicit `startIndex`), into an array that becomes
   // the last argument. Similar to ES6’s "rest parameter".
+  // 我觉得这个函数就是一个适配器, 统一参数。
   var restArguments = function(func, startIndex) {
+    // console.log(arguments, func.length)
     startIndex = startIndex == null ? func.length - 1 : +startIndex;
     return function() {
       var length = Math.max(arguments.length - startIndex, 0),
           rest = Array(length),
           index = 0;
       for (; index < length; index++) {
-        // console.log()
         rest[index] = arguments[index + startIndex];
       }
+      console.log(111)
+      console.log(func, rest, startIndex)
       switch (startIndex) {
         case 0: return func.call(this, rest);
         case 1: return func.call(this, arguments[0], rest);
@@ -641,6 +644,12 @@
   // is not a one-to-one function, so providing an iteratee will disable
   // the faster algorithm.
   // Aliased as `unique`.
+  // 数组去重
+  // 如果isSorted参数为true, 则代表数组此时是有序的。并且不存在iteratee(感觉不加也行？)
+  // 那么就会执行第一个判断条件, 算法执行的速度更快。(一次性比较, 元素和数组的前一个元素进行比较)
+  // 这里的判断当i === 0 时, push。 之后判断 seen !== computed push。然后将最新的元素computed赋值给seen
+  // 当存在iteratee时, 就根据迭代返回的元素`computed`调用contains函数判断seen数组中是否包含computed, 不包含则push
+  // 当不存在iteratee和isSorted时, 直接采用contains判断存在与否。
   _.uniq = _.unique = function(array, isSorted, iteratee, context) {
     if (!_.isBoolean(isSorted)) {
       context = iteratee;
@@ -657,6 +666,7 @@
         if (!i || seen !== computed) result.push(value);
         seen = computed;
       } else if (iteratee) {
+        // 这里直接!_.contains(result, computed) 这里直接传递result有什么问题吗？
         if (!_.contains(seen, computed)) {
           seen.push(computed);
           result.push(value);
@@ -670,8 +680,10 @@
 
   // Produce an array that contains the union: each distinct element from all of
   // the passed-in arrays.
+  // 将多个数组合并成一个数组, 并去重。
   _.union = restArguments(function(arrays) {
-    console.log(arrays)
+    // 调用flatten函数将多个数组合并成一个数组,
+    // 然后调用uniq函数
     return _.uniq(flatten(arrays, true, true));
   });
 
@@ -704,10 +716,12 @@
 
   // Take the difference between one array and a number of other arrays.
   // Only the elements present in just the first array will remain.
-  // 获取差集(根据第一个数组, 判断第一个数组中不包含的与元素)
+  // 获取差集(根据第一个数组, 判断第一个数组中不包含的元素, 组成新的数组)
+  // 将数组
   _.difference = restArguments(function(array, rest) {
     console.log(array, rest)
     rest = flatten(rest, true, true);
+    console.log(rest)
     return _.filter(array, function(value){
       return !_.contains(rest, value);
     });
