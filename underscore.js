@@ -110,19 +110,21 @@
   // on. This helper accumulates all remaining arguments past the function’s
   // argument length (or an explicit `startIndex`), into an array that becomes
   // the last argument. Similar to ES6’s "rest parameter".
-  // 我觉得这个函数就是一个适配器, 统一参数。
+  // 我觉得这个函数就是一个适配器
+  // 就是为了统一参数。func是回调参数。
+  // 根据func的参数长度, 获取startIndex的值, 来决定rest数组的元素
+  // 最后根据switch来进行回调的调用以及参数
   var restArguments = function(func, startIndex) {
-    // console.log(arguments, func.length)
+    // console.log(func)
     startIndex = startIndex == null ? func.length - 1 : +startIndex;
     return function() {
       var length = Math.max(arguments.length - startIndex, 0),
           rest = Array(length),
           index = 0;
+          // console.log(arguments)
       for (; index < length; index++) {
         rest[index] = arguments[index + startIndex];
       }
-      console.log(111)
-      console.log(func, rest, startIndex)
       switch (startIndex) {
         case 0: return func.call(this, rest);
         case 1: return func.call(this, arguments[0], rest);
@@ -717,11 +719,10 @@
   // Take the difference between one array and a number of other arrays.
   // Only the elements present in just the first array will remain.
   // 获取差集(根据第一个数组, 判断第一个数组中不包含的元素, 组成新的数组)
-  // 将数组
+  // 将数组进行flatten函数处理, 调用filter获取数组的每个元素, 最后
+  // 调用!_.contains(rest, value) 判断并返回rest不存在的元素
   _.difference = restArguments(function(array, rest) {
-    console.log(array, rest)
     rest = flatten(rest, true, true);
-    console.log(rest)
     return _.filter(array, function(value){
       return !_.contains(rest, value);
     });
