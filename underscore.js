@@ -1144,11 +1144,12 @@
 
   // Returns the results of applying the iteratee to each element of the object.
   // In contrast to _.map it returns an object.
+  // 对象转换, 感觉功能用map也一样
   _.mapObject = function(obj, iteratee, context) {
     iteratee = cb(iteratee, context);
     var keys = _.keys(obj),
         length = keys.length,
-        results = {};
+        results = {}; // 对象副本
     for (var index = 0; index < length; index++) {
       var currentKey = keys[index];
       results[currentKey] = iteratee(obj[currentKey], currentKey, obj);
@@ -1158,6 +1159,9 @@
 
   // Convert an object into a list of `[key, value]` pairs.
   // The opposite of _.object.
+  // 返回的数组形式[['one', 1], ['two', 2]]
+  // 获取对象的key, 根据获取的key, 获取长度。
+  // 根据长度构建数组, 循环, 重组。
   _.pairs = function(obj) {
     var keys = _.keys(obj);
     var length = keys.length;
@@ -1169,6 +1173,8 @@
   };
 
   // Invert the keys and values of an object. The values must be serializable.
+  // 颠倒key与value
+  // 由原来的key:value 变成value:key
   _.invert = function(obj) {
     var result = {};
     var keys = _.keys(obj);
