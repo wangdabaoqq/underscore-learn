@@ -1195,6 +1195,10 @@
   };
 
   // An internal function for creating assigner functions.
+  // 根据arguments获取长度, 判断长度如果 < 2 就代表只有一项也就没有必要进行了直接返回。
+  // 根据长度进行for循环, 获取arguments > 1的每一项, 再去获取key
+  // 第二个for循环, 根据kes的长度循环， 然后获取key的每一项, 然后判断是否存在 defaults || obj[key]
+  // 不存在 则 source[key] 赋值给 obj[key]
   var createAssigner = function(keysFunc, defaults) {
     return function(obj) {
       var length = arguments.length;
