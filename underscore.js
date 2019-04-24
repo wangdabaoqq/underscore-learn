@@ -760,6 +760,9 @@
   };
 
   // Generator function to create the findIndex and findLastIndex functions.
+  // dir默认是-1。其实就是从后往前的方式查找符合条件的元素返回元素当前位置。
+  // predicate = isMatch (源数组, 要进行判断的对象)
+  // 调用isMatch判断传递的对象是否存在, 存在返回对象当前位置。
   var createPredicateIndexFinder = function(dir) {
     return function(array, predicate, context) {
       console.log(array, predicate, context)
@@ -823,7 +826,6 @@
   // for **isSorted** to use binary search.
   _.indexOf = createIndexFinder(1, _.findIndex, _.sortedIndex);
   _.lastIndexOf = createIndexFinder(-1, _.findLastIndex);
-
   // Generate an integer Array containing an arithmetic progression. A port of
   // the native Python `range()` function. See
   // [the Python documentation](http://docs.python.org/library/functions.html#range).
@@ -835,10 +837,9 @@
     if (!step) {
       step = stop < start ? -1 : 1;
     }
-
     var length = Math.max(Math.ceil((stop - start) / step), 0);
     var range = Array(length);
-
+    console.log(Math.ceil((stop - start) / step))
     for (var idx = 0; idx < length; idx++, start += step) {
       range[idx] = start;
     }
@@ -1314,6 +1315,7 @@
     // var obj = Object(object) 这里我觉得是为了处理传递的`object`是基本类型
     // 进行引用类型的封装。感觉没什么用, 我觉得判断下object是不是引用类型的, 不是
     // 直接 `return false`. 
+    console.log(object, attrs)
     var keys = _.keys(attrs), length = keys.length;
     if (object == null) return !length;
     var obj = Object(object);
