@@ -829,6 +829,13 @@
   // Generate an integer Array containing an arithmetic progression. A port of
   // the native Python `range()` function. See
   // [the Python documentation](http://docs.python.org/library/functions.html#range).
+  // 获取指定范围
+  // start 起始 (当只传递start) 处理为 stop = start, start = 0, 默认 step = 1(start 不为负数)
+  // stop 结束 (当传递stop, stop为负值时), step = -1. 
+  // step 步长 (当传递时默认为传递的步长, 否则为1或者为-1)
+  // 举例子 _.range(0, 30, 5) => [0, 5, 10, 15, 20, 25]
+  // _range(10) => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  // _.range(0, -10, -1) => [0, -1, -2, -3, -4, -5, -6, -7, -8, -9]
   _.range = function(start, stop, step) {
     if (stop == null) {
       stop = start || 0;
@@ -837,9 +844,11 @@
     if (!step) {
       step = stop < start ? -1 : 1;
     }
+    // 处理当`Math.ceil`为负值时取最大值0。
+    // 组成新的固定长度的数组
+    // 进行for循环, range[idx] = start; start为+=step.
     var length = Math.max(Math.ceil((stop - start) / step), 0);
     var range = Array(length);
-    console.log(Math.ceil((stop - start) / step))
     for (var idx = 0; idx < length; idx++, start += step) {
       range[idx] = start;
     }
