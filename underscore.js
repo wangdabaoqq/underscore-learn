@@ -747,12 +747,22 @@
   // Converts lists into objects. Pass either a single array of `[key, value]`
   // pairs, or two parallel arrays of the same length -- one of keys, and one of
   // the corresponding values. Passing by pairs is the reverse of _.pairs.
+  // 将数组转换为对象
+  // _.object(['moe', 'larry', 'curly'], [30, 40, 50])
+  // _.object([['moe', 30], ['larry', 40], ['curly', 50]])
+  // 根据等量的数组长度进行结合, 形成对应的对象。(长度不一致的比如list长度为3, values为4, 则忽略)
+  // 如果list为4, values为3, 则缺少的为undefined。
+  // 我觉得如果_object函数成立的前提是两个参数的长度是一致的。(当然也不是绝对。)
+  // 根据list参数的长度进行循环, 如果存在values则进行对应组合。
+  // 如果是二维数组不存在values的话, 直接获取的循环的循环次数并且取数组第一个赋给第零个。 
   _.object = function(list, values) {
     var result = {};
+    console.log(list, values, getLength(list))
     for (var i = 0, length = getLength(list); i < length; i++) {
       if (values) {
         result[list[i]] = values[i];
       } else {
+        console.log(list[i][0], list[i][1])
         result[list[i][0]] = list[i][1];
       }
     }
@@ -852,7 +862,6 @@
     for (var idx = 0; idx < length; idx++, start += step) {
       range[idx] = start;
     }
-
     return range;
   };
 
