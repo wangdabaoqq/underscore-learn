@@ -115,7 +115,6 @@
   // 根据func的参数长度, 获取startIndex的值, 来决定rest数组的元素
   // 最后根据switch来进行回调的调用以及参数
   var restArguments = function(func, startIndex) {
-    // console.log(func)
     startIndex = startIndex == null ? func.length - 1 : +startIndex;
     return function() {
       var length = Math.max(arguments.length - startIndex, 0),
@@ -636,7 +635,7 @@
 
   // Return a version of the array that does not contain the specified value(s).
   _.without = restArguments(function(array, otherArrays) {
-    console.log(otherArrays)
+    console.log(array, otherArrays)
     return _.difference(array, otherArrays);
   });
 
@@ -757,12 +756,12 @@
   // 如果是二维数组不存在values的话, 直接获取的循环的循环次数并且取数组第一个赋给第零个。 
   _.object = function(list, values) {
     var result = {};
-    console.log(list, values, getLength(list))
+    // console.log(list, values, getLength(list))
     for (var i = 0, length = getLength(list); i < length; i++) {
       if (values) {
         result[list[i]] = values[i];
       } else {
-        console.log(list[i][0], list[i][1])
+        // console.log(list[i][0], list[i][1])
         result[list[i][0]] = list[i][1];
       }
     }
