@@ -226,5 +226,22 @@
 // console.log(_.range(1, -11))
 // console.log(_.object(['moe', 'larry', 'curly'], [30, 40, 50]))
 // console.log(_.object([['moe', 30], ['larry', 40], ['curly', 50]]))
-console.log(_.without([1, 2, 1, 0, 3, 1, 4], 0, 1))
+// console.log(_.without([1, 2, 1, 0, 3, 1, 4], 0, 1))
+// let b = {one: 1, two: 2, three: 3}
+// let a = _.map(b, function(num, key){
+//   console.log(num, key)
+//   return num * 3; 
+//  });
+//  console.log(a)
+_.map([1, 2, 3], function(num){ return num * 3; });
+// var sum = _.reduce(1, 2, 3, 4, function(memo, num, a, b){ 
+//   console.log(memo, num, a,b)
+//   return memo + num;
+//  });
+//  var list = [[0, 1], [2, 3], [4, 5]];
+// var flat = _.reduceRight(list, function(a, b) { return a.concat(b); });
+// var even = _.find([ 1, 2, 4, 4, 5, 6], function(num){ 
+//   return num % 4 == 0;
+//  });
+// _.add(4,3,4,1,1)
 </script>

@@ -74,9 +74,12 @@
       };
       // The 2-argument case is omitted because we’re not using it.
       case 3: return function(value, index, collection) {
+        // console.log(func.call(context, value, index, collection))
         return func.call(context, value, index, collection);
       };
       case 4: return function(accumulator, value, index, collection) {
+        console.log(func)
+        console.log(context, accumulator, value, index, collection)
         return func.call(context, accumulator, value, index, collection);
       };
     }
@@ -110,7 +113,7 @@
   // on. This helper accumulates all remaining arguments past the function’s
   // argument length (or an explicit `startIndex`), into an array that becomes
   // the last argument. Similar to ES6’s "rest parameter".
-  // 我觉得这个函数就是一个适配器
+  // 我觉得这个函数就是一个适配器 
   // 就是为了统一参数。func是回调参数。
   // 根据func的参数长度, 获取startIndex的值, 来决定rest数组的元素
   // 最后根据switch来进行回调的调用以及参数
@@ -205,12 +208,18 @@
     iteratee = cb(iteratee, context);
     console.log(iteratee)
     var keys = !isArrayLike(obj) && _.keys(obj),
+      // 如果是数组的形式, 则直接获取obj的长度。
+      // 如果是对象的形式, 则使用keys的长度。
         length = (keys || obj).length,
+        // 根据长度生成新的数组
         results = Array(length);
         console.log(keys)
-        // console.log(keys[0])
+        // console.log(!isArrayLike(obj), _.keys(obj), obj)
     for (var index = 0; index < length; index++) {
+      // 判断下keys如果存在, 则获取对象的key
+      // 否则则获取数组的下标
       var currentKey = keys ? keys[index] : index;
+      // console.log(iteratee(obj[currentKey], currentKey, obj))
       results[index] = iteratee(obj[currentKey], currentKey, obj);
     }
     return results;
@@ -221,23 +230,34 @@
     // Wrap code that reassigns argument variables in a separate function than
     // the one that accesses `arguments.length` to avoid a perf hit. (#1991)
     var reducer = function(obj, iteratee, memo, initial) {
+      // console.log(iteratee, memo, initial)
       var keys = !isArrayLike(obj) && _.keys(obj),
           length = (keys || obj).length,
           index = dir > 0 ? 0 : length - 1;
+      // 这里的 initial 换成 memo 是否也成立。 
       if (!initial) {
         memo = obj[keys ? keys[index] : index];
         index += dir;
       }
       for (; index >= 0 && index < length; index += dir) {
+        console.log(index)
         var currentKey = keys ? keys[index] : index;
+        // console.log(iteratee)
+        console.log(memo)
         memo = iteratee(memo, obj[currentKey], currentKey, obj);
+        console.log(memo)
       }
+      console.log(memo)
       return memo;
     };
 
     return function(obj, iteratee, memo, context) {
+      // 根据参数的长度决定initial是否存在。
+      // 不太明白为什么不根据memo判断, 要用参数initial判断
+      console.log(obj, iteratee, memo, context)
       var initial = arguments.length >= 3;
       // console.log(obj, iteratee, memo, context)
+      // console.log(optimizeCb(iteratee, context, 4))
       return reducer(obj, optimizeCb(iteratee, context, 4), memo, initial);
     };
   };
@@ -774,11 +794,14 @@
   // 调用isMatch判断传递的对象是否存在, 存在返回对象当前位置。
   var createPredicateIndexFinder = function(dir) {
     return function(array, predicate, context) {
-      console.log(array, predicate, context)
+      // console.log(array, predicate, context)
       predicate = cb(predicate, context);
+      // console.log(predicate)
       var length = getLength(array);
+      // console.log(array, length)
       var index = dir > 0 ? 0 : length - 1;
       for (; index >= 0 && index < length; index += dir) {
+        // console.log(index, array[index])
         // console.log(predicate(array[index], index, array))
         if (predicate(array[index], index, array)) return index;
       }
