@@ -429,24 +429,38 @@
   // If **n** is not specified, returns a single random element.
   // The internal `guard` argument allows it to work with `map`.
   _.sample = function(obj, n, guard) {
+    // console.log(obj, n)
     if (n == null || guard) {
+      // console.log(!isArrayLike(obj))
       if (!isArrayLike(obj)) obj = _.values(obj);
+      // console.log(_.random(obj.length - 1), obj)
       // console.log(_.random(obj.length - 1))
       return obj[_.random(obj.length - 1)];
     }
     var sample = isArrayLike(obj) ? _.clone(obj) : _.values(obj);
+    // console.log(sample)
     var length = getLength(sample);
-    n = Math.max(Math.min(n, length), 0);
+    // console.log(n, length)
+    n = Math.max(Math.min(n, length), 0); // 这里只要是处理当传递的参数n大于数组长度时, n===obj.length
+    // console.log(n, n, length)
     var last = length - 1;
+    // console.log(last)
     for (var index = 0; index < n; index++) {
       /**
        * 根据index的循环次数
        */
+      // 交换位置-多次理解
       var rand = _.random(index, last);
+      // console.log(rand)
       var temp = sample[index];
+      // console.log(temp)
+      // console.log(temp, index, rand)
       sample[index] = sample[rand];
+      // console.log(sample)
       sample[rand] = temp;
+      // console.log(sample, rand, temp)
     }
+    console.log(sample)
     return sample.slice(0, n);
   };
 
@@ -518,6 +532,7 @@
   };
 
   // Return the number of elements in an object.
+  // 根据类型判断, 如果是对象返回数组长度, 对象则返回对象key长度
   _.size = function(obj) {
     if (obj == null) return 0;
     return isArrayLike(obj) ? obj.length : _.keys(obj).length;
@@ -1329,7 +1344,9 @@
 
   // Create a (shallow-cloned) duplicate of an object.
   _.clone = function(obj) {
+    console.log(obj)
     if (!_.isObject(obj)) return obj;
+    console.log(obj)
     return _.isArray(obj) ? obj.slice() : _.extend({}, obj);
   };
 
@@ -1640,12 +1657,14 @@
   };
 
   // Return a random integer between min and max (inclusive).
+  // 获取随机min-max之间的随机随机数(包括max)
   _.random = function(min, max) {
     if (max == null) {
       max = min;
       min = 0;
     }
-    console.log(min + Math.floor(Math.random() * (max - min + 1)))
+    // console.log(min, max)
+    // console.log(min + Math.floor(Math.random() * (max - min + 1)))
     return min + Math.floor(Math.random() * (max - min + 1));
   };
 
