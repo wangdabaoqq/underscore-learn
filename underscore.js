@@ -384,7 +384,6 @@
       iteratee = cb(iteratee, context);
       _.each(obj, function(v, index, list) {
         computed = iteratee(v, index, list);
-        // console.log(v)
         if (computed > lastComputed || computed === -Infinity && result === -Infinity) {
           result = v;
           lastComputed = computed;
@@ -400,10 +399,13 @@
         value, computed;
     if (iteratee == null || typeof iteratee == 'number' && typeof obj[0] != 'object' && obj != null) {
       obj = isArrayLike(obj) ? obj : _.values(obj);
+      // console.log(obj)
       for (var i = 0, length = obj.length; i < length; i++) {
         value = obj[i];
+        // console.log(value)
         if (value != null && value < result) {
-          result = value;
+          console.log(value, result)
+          result = value; 
         }
       }
     } else {
@@ -416,6 +418,7 @@
         }
       });
     }
+    console.log(result)
     return result;
   };
 
@@ -428,6 +431,14 @@
   // [Fisher-Yates shuffle](http://en.wikipedia.org/wiki/Fisher–Yates_shuffle).
   // If **n** is not specified, returns a single random element.
   // The internal `guard` argument allows it to work with `map`.
+  /**
+   *
+   *
+   * @param {*} obj 需要进行乱序的对象
+   * @param {*} n 返回的对象元素的个数, 如果 n 为undefined || null 则返回一个。
+   * @param {*} guard
+   * @returns
+   */
   _.sample = function(obj, n, guard) {
     // console.log(obj, n)
     if (n == null || guard) {
@@ -441,7 +452,7 @@
     // console.log(sample)
     var length = getLength(sample);
     // console.log(n, length)
-    n = Math.max(Math.min(n, length), 0); // 这里只要是处理当传递的参数n大于数组长度时, n===obj.length
+    n = Math.max(Math.min(n, length), 0); // 这里只要是处理当传递的参数n大于数组长度时, 还有就是n为负数时。
     // console.log(n, n, length)
     var last = length - 1;
     // console.log(last)
@@ -449,18 +460,22 @@
       /**
        * 根据index的循环次数
        */
-      // 交换位置-多次理解
+
+      // 交换位置-多次理解(Fisher-Yates 洗牌算法)
+      // 随机乱序
       var rand = _.random(index, last);
       // console.log(rand)
       var temp = sample[index];
-      // console.log(temp)
+      console.log(temp, rand)
       // console.log(temp, index, rand)
       sample[index] = sample[rand];
-      // console.log(sample)
+      console.log(sample)
       sample[rand] = temp;
+      console.log(sample)
       // console.log(sample, rand, temp)
     }
-    console.log(sample)
+    // console.log(sample)
+    // 这里的slice也是为了处理n出现0的情况。
     return sample.slice(0, n);
   };
 
@@ -1658,6 +1673,8 @@
 
   // Return a random integer between min and max (inclusive).
   // 获取随机min-max之间的随机随机数(包括max)
+  // 如果min最小值大于最大值, 则返回min。
+  // 如果 min === max 也是同理。
   _.random = function(min, max) {
     if (max == null) {
       max = min;
@@ -1705,8 +1722,10 @@
   // is invoked with its parent as context. Returns the value of the final
   // child, or `fallback` if any child is undefined.
   _.result = function(obj, path, fallback) {
+    // console.log(path)
     if (!_.isArray(path)) path = [path];
     var length = path.length;
+    // console.log(length)
     if (!length) {
       return _.isFunction(fallback) ? fallback.call(obj) : fallback;
     }
@@ -1716,8 +1735,10 @@
         prop = fallback;
         i = length; // Ensure we don't continue iterating.
       }
+      console.log(prop, obj)
       obj = _.isFunction(prop) ? prop.call(obj) : prop;
     }
+    console.log(obj)
     return obj;
   };
 
