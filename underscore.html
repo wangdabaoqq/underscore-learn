@@ -251,9 +251,48 @@
 // });
 // var stooges = [{name: 'moe', age: 40}, {name: 'larry', age: 50}, {name: 'curly', age: 60}];
 // console.log(_.max(stooges, function(stooge){ return stooge.age }));
-var object = {cheese: 'crumpets', stuff: function(){ return 'nonsense'; }};
+// var object = {cheese: 'crumpets', stuff: function(){ return 'nonsense'; }};
 // _.result(object, 'cheese');
-_.result(object, 'stuff');
+// _.result(object, 'stuff');
 // console.log(_.random(2, 2))
 // -10,0
+// console.log(_.escape('   |&|&Curly, Larry & Moe'))
+// console.log(_.uniqueId(' '))
+// console.log(_.uniqueId(' '))
+// console.log(_.iteratee('firstName'))
+// console.log(_.keys([11, 22]))
+// console.log(_.invert({Moe: "Moses", Larry: "Louis", Curly: "Jerome"}))
+// _.mixin({
+//   capitalize: function(string) {
+//     return string.charAt(0).toUpperCase() + string.substring(1).toLowerCase();
+//   }
+// });
+// console.log(_("fabio").capitalize())
+// console.log(_.chain([1, 2, 3])
+//     .map(function(a) { return a * 2; })
+//     .reverse().value()); // [6, 4, 2]
+// console.log(_([1, 2, 3])
+//     .chain().tap(alert)
+//     .map(function(a){ return a * 2; }).reverse().value())
+// console.log(_.times(-10, function () {
+//   return {11: 11}
+// }))
+
+// console.log(_.noop('11'))
+// var stooge = {name: 'moe'};
+// console.log(_.constant(stooge)())
+// var underscore = _.noConflict()
+// console.log(underscore, _)
+// _.isNull(new Object(null))
+// console.log(_.isNaN(new Number(NaN)))
+// console.log(_.isBoolean(false))
+// console.log(_.isFinite(NaN))
+// console.log((function(){ console.log(Object.prototype.toString.call(arguments)) })(1, 2, 3))
+// console.log(_.isObject(1))
+// let ele = document.querySelector('body')
+// console.log(ele)
+// console.log(_.isElement(ele))
+// console.log(_.isEmpty({aa: 11}))
+var stooge = {name: 'moe', age: 32};
+console.log(_.isMatch({age: 11}, {age: 11}))
 </script>

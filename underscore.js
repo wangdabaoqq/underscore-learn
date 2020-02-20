@@ -45,7 +45,6 @@
     if (!(this instanceof _)) return new _(obj);
     this._wrapped = obj;
   };
-
   // Export the Underscore object for **Node.js**, with
   // backwards-compatibility for their old module API. If we're in
   // the browser, add `_` as a global object.
@@ -107,7 +106,6 @@
   _.iteratee = builtinIteratee = function(value, context) {
     return cb(value, context, Infinity);
   };
-
   // Some functions take a variable number of arguments, or a few expected
   // arguments at the beginning and then a variable number of values to operate
   // on. This helper accumulates all remaining arguments past the function’s
@@ -1249,6 +1247,7 @@
   _.invert = function(obj) {
     var result = {};
     var keys = _.keys(obj);
+    // console.log(keys)
     for (var i = 0, length = keys.length; i < length; i++) {
       result[obj[keys[i]]] = keys[i];
     }
@@ -1260,6 +1259,7 @@
   _.functions = _.methods = function(obj) {
     var names = [];
     for (var key in obj) {
+      // console.log(key)
       if (_.isFunction(obj[key])) names.push(key);
     }
     return names.sort();
@@ -1387,12 +1387,15 @@
     // var obj = Object(object) 这里我觉得是为了处理传递的`object`是基本类型
     // 进行引用类型的封装。感觉没什么用, 我觉得判断下object是不是引用类型的, 不是
     // 直接 `return false`. 
-    console.log(object, attrs)
+    // console.log(object, attrs)
     var keys = _.keys(attrs), length = keys.length;
+    // console.log(length)
     if (object == null) return !length;
     var obj = Object(object);
     for (var i = 0; i < length; i++) {
       var key = keys[i];
+      // console.log(attrs[key], obj[key])
+      // console.log(key in obj)
       if (attrs[key] !== obj[key] || !(key in obj)) return false;
     }
     return true;
@@ -1512,10 +1515,15 @@
 
   // Is a given array, string, or object empty?
   // An "empty" object has no enumerable own-properties.
+  // 判断是否为空
+  // 特殊处理了一些固定类型的。
+  // null undefined
   _.isEmpty = function(obj) {
-    console.log(obj.length)
+    // console.log(obj.length)
+    // console.log(_.isArray(obj), isArrayLike(obj))
     if (obj == null) return true;
     if (isArrayLike(obj) && (_.isArray(obj) || _.isString(obj) || _.isArguments(obj))) return obj.length === 0;
+    // console.log(111)
     return _.keys(obj).length === 0;
   };
 
@@ -1528,6 +1536,8 @@
 
   // Is a given value an array?
   // Delegates to ECMA5's native Array.isArray
+  // es5 使用function => toString.call(obj) === '[object Array]'s
+  // es6 nativeIsArray => Array.isArray
   _.isArray = nativeIsArray || function(obj) {
     return toString.call(obj) === '[object Array]';
   };
@@ -1541,7 +1551,9 @@
 
   // Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp, isError, isMap, isWeakMap, isSet, isWeakSet.
   _.each(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp', 'Error', 'Symbol', 'Map', 'WeakMap', 'Set', 'WeakSet'], function(name) {
+    // console.log(_['is' + name])
     _['is' + name] = function(obj) {
+      // console.log(_['is' + name])
       return toString.call(obj) === '[object ' + name + ']';
     };
   });
@@ -1564,6 +1576,7 @@
   }
 
   // Is a given object a finite number?
+  //  !isNaN(parseFloat(obj)) 不知道触发的测试条件
   _.isFinite = function(obj) {
     // isFinite判是否为一个有限数值
     return !_.isSymbol(obj) && isFinite(obj) && !isNaN(parseFloat(obj));
@@ -1573,21 +1586,35 @@
   // Number.isNaN = Number.isNaN || function(value) {
   // return typeof value === "number" && isNaN(value);
   // }
+  // isNumber 部分在each做了一些类型的判断
+  // toString.call(obj) === '[object ' + name + ']'
+  // 1547行
+  // 先判断是否是数数字类型,(NaN是数字类型) 是则根据isNaN再去判断
+  // isNumber这层处理我想了想主要是处理了undefined
   _.isNaN = function(obj) {
     return _.isNumber(obj) && isNaN(obj);
   };
 
   // Is a given value a boolean?
+  // 为什么要单独写两个条件 obj === true || obj === false
+  // 我想了下, 最后的条件需要向上查找, 花费一定时间, 当obj === true || obj === false
+  // 直接处理不经过最后的条件。
   _.isBoolean = function(obj) {
+    // console.log(obj == true)
     return obj === true || obj === false || toString.call(obj) === '[object Boolean]';
   };
 
   // Is a given value equal to null?
+  // 判断是否是null
+  // 严格相等 ===
+  // null == undefined => true 的前提是不是严格相等
   _.isNull = function(obj) {
     return obj === null;
   };
 
   // Is a given variable undefined?
+  // 判断是否是undefined
+  // void 0 
   _.isUndefined = function(obj) {
     return obj === void 0;
   };
@@ -1620,6 +1647,7 @@
   };
 
   // Keep the identity function around for default iteratees.
+  // 返回传入的值, underscore内部作为默认的迭代器。
   _.identity = function(value) {
     return value;
   };
@@ -1664,10 +1692,13 @@
   };
 
   // Run a function **n** times.
+  // 遍历函数执行次数, 根据次数返回多少次值。
   _.times = function(n, iteratee, context) {
     var accum = Array(Math.max(0, n));
+    // console.log
     iteratee = optimizeCb(iteratee, context, 1);
     for (var i = 0; i < n; i++) accum[i] = iteratee(i);
+    c
     return accum;
   };
 
@@ -1704,17 +1735,23 @@
   // Functions for escaping and unescaping strings to/from HTML interpolation.
   var createEscaper = function(map) {
     var escaper = function(match) {
+      // console.log(match, p1, p2, p3)
       return map[match];
     };
+    // console.log(escaper)
+    // console.log( _.keys(map))
     // Regexes for identifying a key that needs to be escaped.
-    var source = '(?:' + _.keys(map).join('|') + ')';
+    var source = '(?:' + _.keys(map).join('|') + ')'; // ?: 我再去看看正则
     var testRegexp = RegExp(source);
     var replaceRegexp = RegExp(source, 'g');
     return function(string) {
+      // console.log(string, escaper)
       string = string == null ? '' : '' + string;
+      // console.log(testRegexp.test(string), testRegexp, string)
       return testRegexp.test(string) ? string.replace(replaceRegexp, escaper) : string;
     };
   };
+  // console.log(createEscaper(unescapeMap))
   _.escape = createEscaper(escapeMap);
   _.unescape = createEscaper(unescapeMap);
 
@@ -1735,10 +1772,10 @@
         prop = fallback;
         i = length; // Ensure we don't continue iterating.
       }
-      console.log(prop, obj)
+      // console.log(prop, obj)
       obj = _.isFunction(prop) ? prop.call(obj) : prop;
     }
-    console.log(obj)
+    // console.log(obj)
     return obj;
   };
 
@@ -1746,7 +1783,10 @@
   // Useful for temporary DOM ids.
   var idCounter = 0;
   _.uniqueId = function(prefix) {
-    var id = ++idCounter + '';
+    // console.log(prefix)
+    var id = ++idCounter;
+    // console.log(prefix ? 1 : 2)
+    // console.log(prefix ? prefix + id : id)
     return prefix ? prefix + id : id;
   };
 
@@ -1845,6 +1885,7 @@
   _.chain = function(obj) {
     var instance = _(obj);
     instance._chain = true;
+    console.log(instance)
     return instance;
   };
 
@@ -1856,25 +1897,38 @@
 
   // Helper function to continue chaining intermediate results.
   var chainResult = function(instance, obj) {
+    // console.log(instance, obj, _(obj).chain())
+    // console.log(_(obj).chain)
+    console.log(_(obj))
     return instance._chain ? _(obj).chain() : obj;
   };
 
   // Add your own custom functions to the Underscore object.
   _.mixin = function(obj) {
+    // console.dir(obj)
+    // console.log(_.functions(obj))
     _.each(_.functions(obj), function(name) {
+      // console.log(name)
       var func = _[name] = obj[name];
+      // console.log(_.prototype)
+      // console.dir(_)
+      // console.log(_.prototype[name])
       _.prototype[name] = function() {
+        // console.log(name)
         var args = [this._wrapped];
         push.apply(args, arguments);
+        console.log(func, args)
+        // console.log(chainResult(this, func.apply(_, args)))
         return chainResult(this, func.apply(_, args));
       };
+      console.log(_.prototype[name])
     });
     return _;
   };
 
   // Add all of the Underscore functions to the wrapper object.
-  _.mixin(_);
 
+  _.mixin(_);
   // Add all mutator Array functions to the wrapper.
   _.each(['pop', 'push', 'reverse', 'shift', 'sort', 'splice', 'unshift'], function(name) {
     var method = ArrayProto[name];
@@ -1896,6 +1950,7 @@
 
   // Extracts the result from a wrapped and chained object.
   _.prototype.value = function() {
+    console.log(111)
     return this._wrapped;
   };
 
@@ -1904,6 +1959,7 @@
   _.prototype.valueOf = _.prototype.toJSON = _.prototype.value;
 
   _.prototype.toString = function() {
+    console.log(String(this._wrapped), 11)
     return String(this._wrapped);
   };
 
