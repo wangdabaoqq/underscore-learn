@@ -161,8 +161,10 @@
 
   var deepGet = function(obj, path) {
     var length = path.length;
+    // console.log(path)
     for (var i = 0; i < length; i++) {
       if (obj == null) return void 0;
+      // console.log(path[i], obj)
       obj = obj[path[i]];
     }
     return length ? obj : void 0;
@@ -1405,8 +1407,10 @@
   // Internal recursive comparison function for `isEqual`.
   var eq, deepEq;
   eq = function(a, b, aStack, bStack) {
+    // console.log(a, b, aStack, bStack)
     // Identical objects are equal. `0 === -0`, but they aren't identical.
     // See the [Harmony `egal` proposal](http://wiki.ecmascript.org/doku.php?id=harmony:egal).
+    // console.log(a === b)
     if (a === b) return a !== 0 || 1 / a === 1 / b;
     // `null` or `undefined` only equal to itself (strict comparison).
     if (a == null || b == null) return false;
