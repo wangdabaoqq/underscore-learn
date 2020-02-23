@@ -295,9 +295,11 @@
 // console.log(_.isEmpty({aa: 11}))
 // var stooge = {name: 'moe', age: 32};
 // console.log(_.isMatch({age: 11}, {age: 11}))
-// var stooge = {name: 'moe', luckyNumbers: [13, 27, 34]};
-// var clone  = {name: 'moe', luckyNumbers: [13, 27, 34]};
-// console.log(_.isEqual(stooge, clone))
+var stooge = {luckyNumbers: [0], name: 'moe'};
+var clone  = {name: 'moe', luckyNumbers: [0]};
+// var stooge = [new Number(0)]
+// var clone = [new Number(-0)]
+console.log(_.isEqual(stooge, clone))
 // var stooge = {name: 'moe'};
 // console.log(_.propertyOf(stooge)([]))
 </script>

@@ -1406,11 +1406,15 @@
 
   // Internal recursive comparison function for `isEqual`.
   var eq, deepEq;
+  // 这个函数关于对象的形式, 可以允许顺序不同的, a => { name: 1, title: 2 }, b => { title: 2, name: 1 } a === b
+  // 而数组则不同, 顺序必须一致
   eq = function(a, b, aStack, bStack) {
-    // console.log(a, b, aStack, bStack)
+    console.log(a, b)
     // Identical objects are equal. `0 === -0`, but they aren't identical.
     // See the [Harmony `egal` proposal](http://wiki.ecmascript.org/doku.php?id=harmony:egal).
     // console.log(a === b)
+    // 这里主要是三个判断条件主要时候处理基本类型(NaN)
+    // 由于 js中 0 === -0 => true 所以对于0与-0做了特殊处理。
     if (a === b) return a !== 0 || 1 / a === 1 / b;
     // `null` or `undefined` only equal to itself (strict comparison).
     if (a == null || b == null) return false;
@@ -1424,12 +1428,14 @@
 
   // Internal recursive comparison function for `isEqual`.
   deepEq = function(a, b, aStack, bStack) {
+    // console.log(a)
     // Unwrap any wrapped objects.
     if (a instanceof _) a = a._wrapped;
     if (b instanceof _) b = b._wrapped;
     // Compare `[[Class]]` names.
     var className = toString.call(a);
     if (className !== toString.call(b)) return false;
+    console.log(className)
     switch (className) {
       // Strings, numbers, regular expressions, dates, and booleans are compared by value.
       case '[object RegExp]':
@@ -1437,12 +1443,23 @@
       case '[object String]':
         // Primitives and their corresponding object wrappers are equivalent; thus, `"5"` is
         // equivalent to `new String("5")`.
+        // console.dir(a)
+        // return a.toString() === b.toString()
+        // 直接使用 a.toString() === b.toString() 我觉得也可以吧
+        // 毕竟 '' + a 这种也是隐式类型转换。
         return '' + a === '' + b;
       case '[object Number]':
         // `NaN`s are equivalent, but non-reflexive.
         // Object(NaN) is equivalent to NaN.
+        // console.log(+a, +b)
+        // 这里主要是过滤NaN的状况, 只有NaN !== NaN => true
         if (+a !== +a) return +b !== +b;
+        // 这里只要参数 a 是 0 || -0 都是 === 0的, 满足三元表达式第一个条件
+        // b这里可以是任何值。
+        // 1 / 0  => Infinity 
+        // 1 / -0 => -Infinity
         // An `egal` comparison is performed for other numeric values.
+        // console.log(+a, +b, a, b)
         return +a === 0 ? 1 / +a === 1 / b : +a === +b;
       case '[object Date]':
       case '[object Boolean]':
@@ -1456,11 +1473,14 @@
 
     var areArrays = className === '[object Array]';
     if (!areArrays) {
+      console.log(1113)
       if (typeof a != 'object' || typeof b != 'object') return false;
 
       // Objects with different constructors are not equivalent, but `Object`s or `Array`s
       // from different frames are.
+      // 不太明白
       var aCtor = a.constructor, bCtor = b.constructor;
+      // console.log(aCtor === bCtor, aCtor instanceof aCtor)
       if (aCtor !== bCtor && !(_.isFunction(aCtor) && aCtor instanceof aCtor &&
                                _.isFunction(bCtor) && bCtor instanceof bCtor)
                           && ('constructor' in a && 'constructor' in b)) {
@@ -1475,6 +1495,8 @@
     aStack = aStack || [];
     bStack = bStack || [];
     var length = aStack.length;
+
+    // console.log(11)
     while (length--) {
       // Linear search. Performance is inversely proportional to the number of
       // unique nested structures.
@@ -1484,26 +1506,37 @@
     // Add the first object to the stack of traversed objects.
     aStack.push(a);
     bStack.push(b);
-
     // Recursively compare objects and arrays.
     if (areArrays) {
+      // console.log(1119)
       // Compare array lengths to determine if a deep comparison is necessary.
       length = a.length;
+      // console.log(length)
       if (length !== b.length) return false;
       // Deep compare the contents, ignoring non-numeric properties.
       while (length--) {
+        // console.log(a[length], b[length])
         if (!eq(a[length], b[length], aStack, bStack)) return false;
       }
     } else {
       // Deep compare objects.
       var keys = _.keys(a), key;
       length = keys.length;
+      // console.log(111)
       // Ensure that both objects contain the same number of properties before comparing deep equality.
       if (_.keys(b).length !== length) return false;
+      // console.log(_.keys(a), _.keys(b))
+      // console.log(keys)
       while (length--) {
+        // console.log(length)
         // Deep compare each member
         key = keys[length];
+        // console.log(has(b, key))
+        // console.log(a[key], b[key], key)
+        // 这里has(b, key)为false时, 就代表b参数存在a中相同的key, 可以执行递归比较。 
+        // console.log(eq(a[key], b[key], aStack, bStack))
         if (!(has(b, key) && eq(a[key], b[key], aStack, bStack))) return false;
+        // console.log(111)
       }
     }
     // Remove the first object from the stack of traversed objects.
