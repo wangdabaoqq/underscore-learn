@@ -1348,15 +1348,21 @@
   // Return a copy of the object without the blacklisted properties.
   _.omit = restArguments(function(obj, keys) {
     var iteratee = keys[0], context;
+    // console.log(obj, k)
+    // console.log(iteratee)
     if (_.isFunction(iteratee)) {
       iteratee = _.negate(iteratee);
       if (keys.length > 1) context = keys[1];
     } else {
       keys = _.map(flatten(keys, false, false), String);
+      // console.log(keys)
       iteratee = function(value, key) {
+        // !_.contains(keys, key)
+        console.log(!_.contains(keys, key))
         return !_.contains(keys, key);
       };
     }
+    // console.log(_.pick(obj, iteratee, context))
     return _.pick(obj, iteratee, context);
   });
 
@@ -1373,6 +1379,17 @@
   };
 
   // Create a (shallow-cloned) duplicate of an object.
+  // 浅拷贝 => 只能处理一层([11, 22], {name: 11, tile: 22})
+  // 如果是[{name: 22, title: 11}]则
+  // let as = [{aa: 11, b: 22}]
+  // let a = _.clone(as)
+  // a[0].aa = 22
+  // 结果: a = 0: {aa: 22, b: 22}
+  // as = 0: {aa: 22, b: 22}
+  // 由此可见前=浅拷贝 => 只能对第一层数据。
+  // 诚如 `slice`、`concat`
+  // `underscore.js` 没有深拷贝的方法 
+  // 可以看下`lodash.js`
   _.clone = function(obj) {
     console.log(obj)
     if (!_.isObject(obj)) return obj;
@@ -1672,17 +1689,29 @@
   // Shortcut function for checking if an object has a given property directly
   // on itself (in other words, not on a prototype).
   _.has = function(obj, path) {
+    // console.log(obj,)
+    // console.log(toString.call(path))
+    // console.log(!_.isArray(path))
     if (!_.isArray(path)) {
+      // console.log(222)
       return has(obj, path);
     }
+    // console.log(11)
+    // 处理path为数组的情况下
+    // 
     var length = path.length;
     for (var i = 0; i < length; i++) {
       var key = path[i];
+      // console.log(key)
       if (obj == null || !hasOwnProperty.call(obj, key)) {
         return false;
       }
+      // 不太明白这里为什么要对obj重新赋值
       obj = obj[key];
+      // console.log(obj)
     }
+    // obj = 12
+    // console.log(length, obj)
     return !!length;
   };
 
