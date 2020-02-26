@@ -1273,9 +1273,17 @@
   // 第二个for循环, 根据kes的长度循环， 然后获取key的每一项, 然后判断是否存在 defaults || obj[key]
   // 不存在 则 source[key] 赋值给 obj[key]
   var createAssigner = function(keysFunc, defaults) {
+    // console.log(keysFunc, defaults)
     return function(obj) {
+      console.log(obj)
+      // console.log(obj, arguments)
+      // console.log(obj)
       var length = arguments.length;
+      console.log(obj)
+      // 不知道 Object(obj) => 处理什么参数
       if (defaults) obj = Object(obj);
+      console.log(obj)
+      // console.log(obj, arguments)
       if (length < 2 || obj == null) return obj;
       for (var index = 1; index < length; index++) {
         var source = arguments[index],
@@ -1283,9 +1291,14 @@
             l = keys.length;
         for (var i = 0; i < l; i++) {
           var key = keys[i];
+          // !defaults => true 则立即执行, 不用执行后面的条件
+          // _.defaults defaults => true
+          //  当_.defaults函数调用时, !defaults 默认时true, 
+          // 当obj[key]存在值时, 则不进行source[key]赋值。
           if (!defaults || obj[key] === void 0) obj[key] = source[key];
         }
       }
+      console.log(obj)
       return obj;
     };
   };
@@ -1363,7 +1376,7 @@
   _.clone = function(obj) {
     console.log(obj)
     if (!_.isObject(obj)) return obj;
-    console.log(obj)
+    // console.log(_.isArray(obj))
     return _.isArray(obj) ? obj.slice() : _.extend({}, obj);
   };
 

@@ -295,11 +295,21 @@
 // console.log(_.isEmpty({aa: 11}))
 // var stooge = {name: 'moe', age: 32};
 // console.log(_.isMatch({age: 11}, {age: 11}))
-var stooge = {luckyNumbers: [0], name: 'moe'};
-var clone  = {name: 'moe', luckyNumbers: [0]};
+// var stooge = {luckyNumbers: [0], name: 'moe'};
+// var clone  = {name: 'moe', luckyNumbers: [0]};
 // var stooge = [new Number(0)]
 // var clone = [new Number(-0)]
-console.log(_.isEqual(stooge, clone))
+// console.log(_.isEqual(stooge, clone))
 // var stooge = {name: 'moe'};
 // console.log(_.propertyOf(stooge)([]))
+// console.log(_.tap([1, 2, 3], alert))
+// let as = {name: 'moe', aa: 11}
+// let a = _.clone(as)
+// a.name = 111
+// console.log(a, as)
+// var iceCream = {flavor: "chocolate"};
+var iceCream = [22];
+var iceCreams = [11, 11, 33];
+console.log(_.defaults(iceCream, iceCreams))
+// console.log(_.isObject(new Number(111)))
 </script>
