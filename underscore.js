@@ -41,6 +41,10 @@
 
   // Create a safe reference to the Underscore object for use below.
   var _ = function(obj) {
+    // console.log(obj)
+    // console.log(new _(obj))
+    // console.log(obj instanceof _)
+    // console.log(this instanceof _)
     if (obj instanceof _) return obj;
     if (!(this instanceof _)) return new _(obj);
     this._wrapped = obj;
@@ -151,6 +155,7 @@
 
   var shallowProperty = function(key) {
     return function(obj) {
+      console.log(obj)
       return obj == null ? void 0 : obj[key];
     };
   };
@@ -176,6 +181,8 @@
   // Avoids a very nasty iOS 8 JIT bug on ARM-64. #2094
   var MAX_ARRAY_INDEX = Math.pow(2, 53) - 1;
   var getLength = shallowProperty('length');
+  // 类数组，即拥有 length 属性并且 length 属性值为 Number 类型的元素
+  // 类数组 => 包括数组、arguments、HTML Collection 以及 NodeList 等等
   var isArrayLike = function(collection) {
     var length = getLength(collection);
     return typeof length == 'number' && length >= 0 && length <= MAX_ARRAY_INDEX;
@@ -187,9 +194,35 @@
   // The cornerstone, an `each` implementation, aka `forEach`.
   // Handles raw objects in addition to array-likes. Treats all
   // sparse array-likes as if they were dense.
+  // each 循环遍历, obj 可以为`{}`、`[]`两种, 类数组直接使用for
+  // 循环进行遍历, 对象类型使用`_.keys`获取key组成数组, 进行循环遍历。
+  // 我考虑合成一个for循环
+  // 最后返回obj => 方便链式调用
   _.each = _.forEach = function(obj, iteratee, context) {
     iteratee = optimizeCb(iteratee, context);
     var i, length;
+    // var keys = !isArrayLike(obj) && _.keys(obj);
+    //   // 如果是类数组的形式, 则调用_.keys。
+    //   // 如果是数组的形式, 则使用keys的长度。
+    //     var length = (keys || obj).length;
+    //     // 根据长度生成新的数组
+    //   //  var results = Array(length);
+    // for (var index = 0; index < length; index++) {
+    //     // 判断下keys如果存在, 则获取对象的key
+    //     // 否则则获取数组的下标
+    //     var currentKey = keys ? keys[index] : index;
+    //     // console.log(obj[currentKey])
+    //     // console.log(iteratee(obj[currentKey], currentKey, obj))
+    //     iteratee(obj[currentKey], currentKey, obj);
+    //   }   
+    // var keys = !isArrayLike(obj) && _.keys(obj)
+    // var len = (keys || obj).length
+    // for (i = 0, length = len; i < length; i++) {
+    //   const current =  keys ? keys[i] : i
+    //   iteratee(obj[current], i, obj)
+    //   // isArrayLike(obj) ? iteratee(obj[i], i, obj) : iteratee(obj[item[i]], item[i], obj)
+    //   // iteratee(obj[keys[i]], keys[i], obj);
+    // }
     if (isArrayLike(obj)) {
       for (i = 0, length = obj.length; i < length; i++) {
         iteratee(obj[i], i, obj)
@@ -206,19 +239,20 @@
   // Return the results of applying the iteratee to each element.
   _.map = _.collect = function(obj, iteratee, context) {
     iteratee = cb(iteratee, context);
-    console.log(iteratee)
-    var keys = !isArrayLike(obj) && _.keys(obj),
-      // 如果是数组的形式, 则直接获取obj的长度。
-      // 如果是对象的形式, 则使用keys的长度。
-        length = (keys || obj).length,
+    // console.log(iteratee)
+    var keys = !isArrayLike(obj) && _.keys(obj);
+      // 如果是类数组的形式, 则调用_.keys。
+      // 如果是数组的形式, 则使用keys的长度。
+        var length = (keys || obj).length;
         // 根据长度生成新的数组
-        results = Array(length);
-        console.log(keys)
+       var results = Array(length);
+        // console.log(length)
         // console.log(!isArrayLike(obj), _.keys(obj), obj)
     for (var index = 0; index < length; index++) {
       // 判断下keys如果存在, 则获取对象的key
       // 否则则获取数组的下标
       var currentKey = keys ? keys[index] : index;
+      // console.log(obj[currentKey])
       // console.log(iteratee(obj[currentKey], currentKey, obj))
       results[index] = iteratee(obj[currentKey], currentKey, obj);
     }
@@ -352,6 +386,9 @@
   });
 
   // Convenience version of a common use case of `map`: fetching a property.
+  // 获取某个指定数组对象的某个属性值 => [{}]
+  // 使用_.property(key), 获取指定的key
+  // 使用_.map循环遍历生成新的数组。
   _.pluck = function(obj, key) {
     return _.map(obj, _.property(key));
   };
@@ -799,11 +836,12 @@
   // 将数组转换为对象
   // _.object(['moe', 'larry', 'curly'], [30, 40, 50])
   // _.object([['moe', 30], ['larry', 40], ['curly', 50]])
-  // 根据等量的数组长度进行结合, 形成对应的对象。(长度不一致的比如list长度为3, values为4, 则忽略)
+  // 根据等量的数组长度进行结合, 形成对应的对象。(长度不一致的比如list长度为3, values为4, 则忽略多余的values)
   // 如果list为4, values为3, 则缺少的为undefined。
   // 我觉得如果_object函数成立的前提是两个参数的长度是一致的。(当然也不是绝对。)
   // 根据list参数的长度进行循环, 如果存在values则进行对应组合。
   // 如果是二维数组不存在values的话, 直接获取的循环的循环次数并且取数组第一个赋给第零个。 
+  // 字符串可以通过下标获取。
   _.object = function(list, values) {
     var result = {};
     // console.log(list, values, getLength(list))
@@ -822,6 +860,8 @@
   // dir默认是-1。其实就是从后往前的方式查找符合条件的元素返回元素当前位置。
   // predicate = isMatch (源数组, 要进行判断的对象)
   // 调用isMatch判断传递的对象是否存在, 存在返回对象当前位置。
+  // dir 参数就是处理`findIndex`、`findLastIndex` 
+  // 如多dir为 > 0, 则从前往后遍历, 否则反之
   var createPredicateIndexFinder = function(dir) {
     return function(array, predicate, context) {
       // console.log(array, predicate, context)
@@ -864,10 +904,12 @@
       if (typeof idx == 'number') {
         if (dir > 0) {
           i = idx >= 0 ? idx : Math.max(idx + length, i);
+          console.log(i)
         } else {
           length = idx >= 0 ? Math.min(idx + 1, length) : idx + length + 1;
         }
       } else if (sortedIndex && idx && length) {
+        console.log(111)
         idx = sortedIndex(array, item);
         return array[idx] === item ? idx : -1;
       }
@@ -919,11 +961,17 @@
 
   // Chunk a single array into multiple arrays, each containing `count` or fewer
   // items.
+  // 将一个数组, 根据count 划分为相同count的多个数组
   _.chunk = function(array, count) {
+    // 如果count 为null, || 小于 1 返回空数组
     if (count == null || count < 1) return [];
     var result = [];
     var i = 0, length = array.length;
     while (i < length) {
+      // console.log(slice.call(array, 0, 1))
+      // array.slice(i, i += count)
+      // 这里是不是直接可以调用slice不使用call？
+      // 使用while遍历, i += count, 使用slice
       result.push(slice.call(array, i, i += count));
     }
     return result;
@@ -1327,6 +1375,7 @@
 
   // Return a copy of the object only containing the whitelisted properties.
   _.pick = restArguments(function(obj, keys) {
+
     var result = {}, iteratee = keys[0];
     if (obj == null) return result;
     if (_.isFunction(iteratee)) {
@@ -1337,9 +1386,11 @@
       keys = flatten(keys, false, false);
       obj = Object(obj);
     }
+    // console.log(iteratee)
     for (var i = 0, length = keys.length; i < length; i++) {
       var key = keys[i];
       var value = obj[key];
+      // console.log(value)
       if (iteratee(value, key, obj)) result[key] = value;
     }
     return result;
@@ -1355,14 +1406,11 @@
       if (keys.length > 1) context = keys[1];
     } else {
       keys = _.map(flatten(keys, false, false), String);
-      // console.log(keys)
       iteratee = function(value, key) {
-        // !_.contains(keys, key)
-        console.log(!_.contains(keys, key))
         return !_.contains(keys, key);
       };
     }
-    // console.log(_.pick(obj, iteratee, context))
+
     return _.pick(obj, iteratee, context);
   });
 
@@ -1421,7 +1469,6 @@
     // 直接 `return false`. 
     // console.log(object, attrs)
     var keys = _.keys(attrs), length = keys.length;
-    // console.log(length)
     if (object == null) return !length;
     var obj = Object(object);
     for (var i = 0; i < length; i++) {
@@ -1726,7 +1773,7 @@
   };
 
   // Keep the identity function around for default iteratees.
-  // 返回传入的值, underscore内部作为默认的迭代器。
+  // 返��传入的值, underscore内部作为默认的迭代器。
   _.identity = function(value) {
     return value;
   };
@@ -1962,9 +2009,11 @@
 
   // Add a "chain" function. Start chaining a wrapped Underscore object.
   _.chain = function(obj) {
+    // console.log(_(obj), '=> 1111')
+    // console.log(_)
     var instance = _(obj);
-    instance._chain = true;
     console.log(instance)
+    instance._chain = true;
     return instance;
   };
 
@@ -1977,8 +2026,9 @@
   // Helper function to continue chaining intermediate results.
   var chainResult = function(instance, obj) {
     // console.log(instance, obj, _(obj).chain())
-    // console.log(_(obj).chain)
-    console.log(_(obj))
+    console.log(obj)
+    // console.log(_(obj))
+    // console.log(_(obj))
     return instance._chain ? _(obj).chain() : obj;
   };
 
@@ -1989,18 +2039,23 @@
     _.each(_.functions(obj), function(name) {
       // console.log(name)
       var func = _[name] = obj[name];
+      // console.log(name)
       // console.log(_.prototype)
       // console.dir(_)
       // console.log(_.prototype[name])
       _.prototype[name] = function() {
         // console.log(name)
         var args = [this._wrapped];
+        // console.log(arguments)
         push.apply(args, arguments);
-        console.log(func, args)
+        // console.dir(push())
+
+        // console.log(args)
+        // console.log(func, args)
         // console.log(chainResult(this, func.apply(_, args)))
         return chainResult(this, func.apply(_, args));
       };
-      console.log(_.prototype[name])
+      // console.log(_.prototype[name])
     });
     return _;
   };
@@ -2029,7 +2084,6 @@
 
   // Extracts the result from a wrapped and chained object.
   _.prototype.value = function() {
-    console.log(111)
     return this._wrapped;
   };
 
