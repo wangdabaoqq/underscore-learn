@@ -70,6 +70,7 @@
   // of the passed-in callback, to be repeatedly applied in other Underscore
   // functions.
   var optimizeCb = function(func, context, argCount) {
+    console.log(context)
     if (context === void 0) return func;
     switch (argCount == null ? 3 : argCount) {
       case 1: return function(value) {
@@ -196,8 +197,10 @@
   // sparse array-likes as if they were dense.
   // each 循环遍历, obj 可以为`{}`、`[]`两种, 类数组直接使用for
   // 循环进行遍历, 对象类型使用`_.keys`获取key组成数组, 进行循环遍历。
-  // 我考虑合成一个for循环
+  // 我考虑合成一个for循环 可行 => 合完发现和`map`类似。。
   // 最后返回obj => 方便链式调用
+  // 支持类数组类型
+  // https://underscorejs.net/#each
   _.each = _.forEach = function(obj, iteratee, context) {
     iteratee = optimizeCb(iteratee, context);
     var i, length;
@@ -237,6 +240,7 @@
   };
 
   // Return the results of applying the iteratee to each element.
+  // map 也是类似的 不同的是返回与之对应的数组。
   _.map = _.collect = function(obj, iteratee, context) {
     iteratee = cb(iteratee, context);
     // console.log(iteratee)
@@ -260,6 +264,8 @@
   };
 
   // Create a reducing function iterating left or right.
+  // reduce累加器 => 
+  // dir == 1 ? 则按照循序执行 : 否则反之。
   var createReduce = function(dir) {
     // Wrap code that reassigns argument variables in a separate function than
     // the one that accesses `arguments.length` to avoid a perf hit. (#1991)
@@ -273,23 +279,24 @@
         memo = obj[keys ? keys[index] : index];
         index += dir;
       }
+      // console.log(index)
       for (; index >= 0 && index < length; index += dir) {
-        console.log(index)
+        // console.log(index)
         var currentKey = keys ? keys[index] : index;
-        // console.log(iteratee)
-        console.log(memo)
+        // console.log(obj[currentKey])
         memo = iteratee(memo, obj[currentKey], currentKey, obj);
-        console.log(memo)
+        // console.log(memo)
       }
-      console.log(memo)
       return memo;
     };
 
     return function(obj, iteratee, memo, context) {
       // 根据参数的长度决定initial是否存在。
       // 不太明白为什么不根据memo判断, 要用参数initial判断
-      console.log(obj, iteratee, memo, context)
+      // console.log(obj, iteratee, memo, context)
+      // 不用`memo`的缘故是因为会出现`0`的缘故？
       var initial = arguments.length >= 3;
+      console.log(initial)
       // console.log(obj, iteratee, memo, context)
       // console.log(optimizeCb(iteratee, context, 4))
       return reducer(obj, optimizeCb(iteratee, context, 4), memo, initial);
@@ -1232,7 +1239,7 @@
     // 判断是否支持Object.keys，支持则使用。
     if (nativeKeys) return nativeKeys(obj);
     // 不支持则使用for循环, 判断是否存在
-    // hash === obj != null && Object.prototype.hasOwnProperty.call(ob, key)
+    // hash === obj != null && Object.prototype.hasOwnProperty.call(obj, key)
     var keys = [];
     for (var key in obj) if (has(obj, key)) keys.push(key);
     // Ahem, IE < 9.

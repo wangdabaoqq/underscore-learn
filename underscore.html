@@ -378,8 +378,16 @@
 // console.log(_.findIndex([{name: 1}, {ss: 11}, {name: 2}, {name: 2}], {name: 2}))
 // var numbers = [10, 5, 100, 2, 1000];
 // console.log(_.min(numbers, 2))
-_.each({aa: 2, 2: 3}, function (e) {
-  console.log(e)
-});
+// console.log(_.each({0: 2, 2: 3}, function (e) {
+//   console.log(e)
+//   if (e >= 2) {
+//    return e
+//   }
+// }))
+// console.log(_.map([1, 2, 3], function(num){ return num >= 3; }))
+// var sum = _.reduce([1, 2, 3], function(memo, num){ return memo + num; });
+// console.log(sum)
 
+var a = _.contains('name111', 'name');
+console.log(a)
 </script>
