@@ -299,6 +299,7 @@
       console.log(initial)
       // console.log(obj, iteratee, memo, context)
       // console.log(optimizeCb(iteratee, context, 4))
+      // 传递参数4的情况 => 是在context存在的情况下。
       return reducer(obj, optimizeCb(iteratee, context, 4), memo, initial);
     };
   };
@@ -312,8 +313,10 @@
 
   // Return the first value which passes a truth test. Aliased as `detect`.
   _.find = _.detect = function(obj, predicate, context) {
+    // 根据类型选择一个函数执行
     var keyFinder = isArrayLike(obj) ? _.findIndex : _.findKey;
     var key = keyFinder(obj, predicate, context);
+    // 在当没有找到时, _.findIndex 返回 -1, _.findKey 返回undefined。
     if (key !== void 0 && key !== -1) return obj[key];
   };
 
@@ -1364,9 +1367,10 @@
   // Assigns a given object with all the own properties in the passed-in object(s).
   // (https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object/assign)
   _.extendOwn = _.assign = createAssigner(_.keys);
-
+  // 获取指定的key
   // Returns the first key on an object that passes a predicate test.
   _.findKey = function(obj, predicate, context) {
+    console.log(predicate)
     predicate = cb(predicate, context);
     var keys = _.keys(obj), key;
     for (var i = 0, length = keys.length; i < length; i++) {
