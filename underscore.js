@@ -405,12 +405,15 @@
 
   // Convenience version of a common use case of `filter`: selecting only objects
   // containing specific `key:value` pairs.
+  // 找到所有匹配的元素(key-val)
   _.where = function(obj, attrs) {
     return _.filter(obj, _.matcher(attrs));
   };
 
   // Convenience version of a common use case of `find`: getting the first object
   // containing specific `key:value` pairs.
+  // 寻找第一个有指定 key-value 键值对的对象 https://github.com/lessfish/underscore-analysis/blob/master/underscore-1.8.3.js/underscore-1.8.3-analysis.js
+  // 和`_.where`函数不一致的是, `findWhere是找到第一个匹配(key-val)`, 而`_.where` 则是(key-val)获取所有匹配元素。
   _.findWhere = function(obj, attrs) {
     return _.find(obj, _.matcher(attrs));
   };
@@ -1334,13 +1337,12 @@
     // console.log(keysFunc, defaults)
     return function(obj) {
       console.log(obj)
-      // console.log(obj, arguments)
+      console.log(keysFunc, defaults)
+      console.log(arguments)
       // console.log(obj)
       var length = arguments.length;
-      console.log(obj)
       // 不知道 Object(obj) => 处理什么参数
       if (defaults) obj = Object(obj);
-      console.log(obj)
       // console.log(obj, arguments)
       if (length < 2 || obj == null) return obj;
       for (var index = 1; index < length; index++) {
@@ -1353,6 +1355,7 @@
           // _.defaults defaults => true
           //  当_.defaults函数调用时, !defaults 默认时true, 
           // 当obj[key]存在值时, 则不进行source[key]赋值。
+          // 根据对象key的唯一性, 不会存在同一个key.
           if (!defaults || obj[key] === void 0) obj[key] = source[key];
         }
       }
@@ -1478,7 +1481,7 @@
     // var obj = Object(object) 这里我觉得是为了处理传递的`object`是基本类型
     // 进行引用类型的封装。感觉没什么用, 我觉得判断下object是不是引用类型的, 不是
     // 直接 `return false`. 
-    // console.log(object, attrs)
+    console.log(object, attrs)
     var keys = _.keys(attrs), length = keys.length;
     if (object == null) return !length;
     var obj = Object(object);
@@ -1486,6 +1489,8 @@
       var key = keys[i];
       // console.log(attrs[key], obj[key])
       // console.log(key in obj)
+      // 比对 `val` 不一致则返回false。
+      // 对key 进行 执行`in`操作符 => 不存在false。
       if (attrs[key] !== obj[key] || !(key in obj)) return false;
     }
     return true;
