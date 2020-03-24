@@ -325,13 +325,18 @@
   _.filter = _.select = function(obj, predicate, context) {
     var results = [];
     predicate = cb(predicate, context);
-    // console.log(predicate)
+    console.log(predicate())
     _.each(obj, function(value, index, list) {
-      if (predicate(value, index, list)) results.push(value);
+      console.log(predicate(value, index, list))
+      if (predicate(value, index, list)) {
+        console.log(predicate)
+        console.log(value)
+        results.push(value);
+      }
     });
     return results;
   };
-
+  // 返回所有不满足条件的元素
   // Return all the elements for which a truth test fails.
   _.reject = function(obj, predicate, context) {
     // console.log(_.negate(cb(predicate)))
@@ -340,12 +345,16 @@
 
   // Determine whether all of the elements match a truth test.
   // Aliased as `all`.
+  // every 要求所有元素满足条件 => true
+  // 一样不满足 => false
   _.every = _.all = function(obj, predicate, context) {
     predicate = cb(predicate, context);
+    // 当不是`obj`数组、类数组 => 根据key生成数组获取长度。
     var keys = !isArrayLike(obj) && _.keys(obj),
         length = (keys || obj).length;
     for (var index = 0; index < length; index++) {
       var currentKey = keys ? keys[index] : index;
+      // 当一项未满足 => false
       if (!predicate(obj[currentKey], currentKey, obj)) return false;
     }
     return true;
@@ -353,6 +362,9 @@
 
   // Determine if at least one element in the object matches a truth test.
   // Aliased as `any`.
+  // `some` 跟 `every` 类似 
+  // 区别是`some`当有一项成立时 => true
+  // `every`反之。
   _.some = _.any = function(obj, predicate, context) {
     predicate = cb(predicate, context);
     var keys = !isArrayLike(obj) && _.keys(obj),
@@ -368,6 +380,7 @@
   // Aliased as `includes` and `include`.
   _.contains = _.includes = _.include = function(obj, item, fromIndex, guard) {
     // console.log(obj, item, fromIndex, guard)
+    console.log(guard)
     if (!isArrayLike(obj)) obj = _.values(obj);
     if (typeof fromIndex != 'number' || guard) fromIndex = 0;
     return _.indexOf(obj, item, fromIndex) >= 0;
@@ -1161,8 +1174,12 @@
   };
 
   // Returns a negated version of the passed-in predicate.
+  // 对于predicate => 对于false 则取true
+  // 对于true => 取false
   _.negate = function(predicate) {
+    // console.log(!predicate.apply(this, arguments))
     return function() {
+      // console.log(!predicate.apply(this, arguments))
       return !predicate.apply(this, arguments);
     };
   };
