@@ -919,7 +919,6 @@
     var low = 0, high = getLength(array);
     while (low < high) {
       var mid = Math.floor((low + high) / 2);
-      console.log(mid, high, low)
       // console.log(iteratee(array[mid]), value, array)
       if (iteratee(array[mid]) < value) low = mid + 1; else high = mid;
     }
