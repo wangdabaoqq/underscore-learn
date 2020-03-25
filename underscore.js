@@ -380,7 +380,6 @@
   // Aliased as `includes` and `include`.
   _.contains = _.includes = _.include = function(obj, item, fromIndex, guard) {
     // console.log(obj, item, fromIndex, guard)
-    console.log(guard)
     if (!isArrayLike(obj)) obj = _.values(obj);
     if (typeof fromIndex != 'number' || guard) fromIndex = 0;
     return _.indexOf(obj, item, fromIndex) >= 0;
@@ -890,7 +889,6 @@
   // 如多dir为 > 0, 则从前往后遍历, 否则反之
   var createPredicateIndexFinder = function(dir) {
     return function(array, predicate, context) {
-      // console.log(array, predicate, context)
       predicate = cb(predicate, context);
       // console.log(predicate)
       var length = getLength(array);
@@ -911,19 +909,25 @@
 
   // Use a comparator function to figure out the smallest index at which
   // an object should be inserted so as to maintain order. Uses binary search.
+  // cb函数根据iteratee的不同, 返回不同函数 => 可以看`cb`函数
+  // 二分查找
   _.sortedIndex = function(array, obj, iteratee, context) {
     iteratee = cb(iteratee, context, 1);
+    // console.log(iteratee)
     var value = iteratee(obj);
+    // console.log(value)
     var low = 0, high = getLength(array);
     while (low < high) {
       var mid = Math.floor((low + high) / 2);
+      console.log(mid, high, low)
+      // console.log(iteratee(array[mid]), value, array)
       if (iteratee(array[mid]) < value) low = mid + 1; else high = mid;
     }
     return low;
   };
 
   // Generator function to create the indexOf and lastIndexOf functions.
-  var createIndexFinder = function(dir, predicateFind, sortedIndex) {
+  var createIndexFinder = function(dir, predicateFind, cz) {
     return function(array, item, idx) {
       // console.log(array, item, idx)
       var i = 0, length = getLength(array);
@@ -939,8 +943,10 @@
         idx = sortedIndex(array, item);
         return array[idx] === item ? idx : -1;
       }
+      // 特例 => 主要是处理NaN的特殊性。
       if (item !== item) {
         idx = predicateFind(slice.call(array, i, length), _.isNaN);
+        console.log(idx, i)
         return idx >= 0 ? idx + i : -1;
       }
       for (idx = dir > 0 ? i : length - 1; idx >= 0 && idx < length; idx += dir) {

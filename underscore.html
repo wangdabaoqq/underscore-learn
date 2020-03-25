@@ -398,5 +398,10 @@
 // console.log(odds)
 // var num = _.where([{author: "Shakespeare"}, {author: "Shakespeare"}], {author: "Shakespeare"});
 // console.log(num)
-console.log(_.contains([1, 2, 3], 3, 10))
+// console.log(_.contains([1, 2, NaN], NaN))
+// console.log(_.sortedIndex([10, 20, 30, 40, 50], 10))
+var stooges = [{name: 'moe', age: 40}, {name: 'curly', age: 60}];
+
+console.log(_.sortedIndex(stooges, {name: 'larry', age: 50}, 'age'))
+
 </script>
