@@ -387,6 +387,7 @@
 
   // Invoke a method (with arguments) on every item in a collection.
   _.invoke = restArguments(function(obj, path, args) {
+    console.log(path)
     var contextPath, func;
     if (_.isFunction(path)) {
       func = path;
@@ -401,8 +402,10 @@
           context = deepGet(context, contextPath);
         }
         if (context == null) return void 0;
+        console.log(context)
         method = context[path];
       }
+      console.log(method, context)
       return method == null ? method : method.apply(context, args);
     });
   });
@@ -919,6 +922,9 @@
     var low = 0, high = getLength(array);
     while (low < high) {
       var mid = Math.floor((low + high) / 2);
+      // console.log(mid, array[mid], low, high)
+      // console.log(array[mid], value)
+      // if (iteratee(array[mid]) === value) return mid
       // console.log(iteratee(array[mid]), value, array)
       if (iteratee(array[mid]) < value) low = mid + 1; else high = mid;
     }
@@ -928,7 +934,7 @@
   // Generator function to create the indexOf and lastIndexOf functions.
   var createIndexFinder = function(dir, predicateFind, cz) {
     return function(array, item, idx) {
-      // console.log(array, item, idx)
+      console.log(array, item, idx)
       var i = 0, length = getLength(array);
       if (typeof idx == 'number') {
         if (dir > 0) {
@@ -938,7 +944,6 @@
           length = idx >= 0 ? Math.min(idx + 1, length) : idx + length + 1;
         }
       } else if (sortedIndex && idx && length) {
-        console.log(111)
         idx = sortedIndex(array, item);
         return array[idx] === item ? idx : -1;
       }
